@@ -7,9 +7,13 @@ desktopDir = wshShell.ExpandEnvironmentStrings("%HOMEDRIVE%%HOMEPATH%") & "\Desk
 
 ' Get the command-line arguments of the currently running Supernova Player
 Set objFSO = CreateObject("Scripting.FileSystemObject")
-tempFilePath = scriptDir & "SupernovaShortcutMakerTemp.txt"
+tempFilePath = scriptDir & "\SuperNovaShortcutMakerTemp.txt"
 WshShell.Run "CMD /C WMIC path win32_process get Commandline | findstr snlauncher.exe > """ + tempFilePath + """", 0, True
 processesStr = objFSO.OpenTextFile(tempFilePath, 1, False).ReadLine
+' Delete the temporary file
+If objFSO.FileExists(tempFilePath) Then
+	objFSO.DeleteFile tempFilePath, True
+End If
 If InStr(processesStr, "supernova://") = 0 Then
 	msgBox "SuperNova Player does not appear to be running. Please try again."
 	WScript.Quit
